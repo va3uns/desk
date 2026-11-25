@@ -137,14 +137,14 @@ footer .fine{grid-column:1/-1;font-size:13px;opacity:.7;border-top:1px solid cur
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="wob"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter></svg>
 
-<nav aria-label="sections" id="home"><a class="home" href="#home" aria-label="varun sangani, back to the top">varun sangani</a><div><a href="#desk">my desk</a><a href="#bench">the bench</a><a href="#yard">the yard</a><a href="#say-hi">say hi</a></div></nav>
+<nav aria-label="sections" id="home"><a class="home" href="#home" aria-label="varun sangani, back to the top">varun sangani</a><div><a href="#desk">my desk</a><a href="#yard">the yard</a><a href="#say-hi">say hi</a></div></nav>
 
 <main>
 <section class="band" id="desk"><div class="wrap hero">
  <div class="hello">
   <h1>hi, i'm <span>varun.</span></h1>
   <p>junior designer at planwerkstatt, architect by training, usability engineer somewhat by accident. i live in düsseldorf and think a lot about public space: who gets to sit, who gets to protest, and why strangers on a bench almost never talk to each other.</p>
-  <p>the internet doesn't have many benches, so i made one. come in, poke around my desk, take a seat, leave a note on your way out.</p>
+  <p>the internet doesn't have many benches, so i made one. come in, poke around my desk, leave a note on your way out.</p>
   <ul class="links">
    <li><a href="mailto:varuns@ik.me">email <small>varuns@ik.me</small></a></li>
    <li><a href="https://www.linkedin.com/in/varunsangani">linkedin</a></li>
@@ -177,28 +177,6 @@ footer .fine{grid-column:1/-1;font-size:13px;opacity:.7;border-top:1px solid cur
  </div>
 </div></section>
 
-<section class="band" id="bench"><div class="wrap">
- <div class="bench-head">
-  <h2>the bench</h2>
-  <p>a real bench, more or less. everyone on this page right now shows up here: sit down, or just pass by.</p>
- </div>
- <div class="benchbox" id="benchbox">
-  <div class="ground"></div>
-  <img src="objects/bench.png" alt="a cast-iron garden bench">
-  <svg viewBox="0 0 560 360" aria-hidden="true">
-   <g class="drawn" filter="url(#wob)" color="var(--pen)">
-    <path class="ink" d="M150 212 C230 209 320 214 420 210 M146 228 C230 225 330 230 424 226 L420 210 M146 228 L150 212"/>
-    <path class="ink" d="M160 156 C240 153 330 158 410 154 M158 174 C240 171 330 176 412 172 M176 150 L174 212 M394 148 L396 212"/>
-    <path class="ink" d="M170 228 L164 344 M188 228 L190 344 M380 228 L376 344 M400 228 L404 344"/>
-   </g>
-   <g id="people"></g>
-  </svg>
- </div>
- <div class="bar">
-  <button class="btn" id="sit" type="button">sit down</button>
-  <span class="count" id="count">just you here right now</span>
- </div>
-</div></section>
 
 <section class="band" id="yard"><div class="wrap">
  <div class="yard-head">
@@ -308,7 +286,7 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 /* real objects: fall back to drawings until the image files exist */
 function imgFallback(img,box){const miss=()=>box.classList.add("noimg");if(img.complete&&!img.naturalWidth)miss();img.addEventListener("error",miss);img.addEventListener("load",()=>box.classList.remove("noimg"))}
 document.querySelectorAll(".obj").forEach(o=>imgFallback(o.querySelector("img"),o));
-imgFallback($("#benchbox img"),$("#benchbox"));
+
 
 function use(name){
  if(!window.claude||typeof window.claude.use!=="function")return Promise.resolve(null);
@@ -503,6 +481,7 @@ function figure(x,y,c,label,sit){
  return g;
 }
 function renderBench(){
+ if(!$("#people"))return;
  const ppl=room?room.peers().filter(p=>p.kind!=="agent"):[];
  const list=ppl.length?ppl.map(p=>({me:p.sameTab,c:p.sameTab?myColor:(PAL.includes(p.presence.c)?p.presence.c:"#888"),sit:p.sameTab?sitting:!!p.presence.sit,nick:p.sameTab?"you":String(p.presence.nick||"").slice(0,14)})):[{me:true,c:myColor,sit:sitting,nick:"you"}];
  const sitters=list.filter(p=>p.sit).slice(0,5), walkers=list.filter(p=>!p.sit);
@@ -515,7 +494,7 @@ function renderBench(){
  $("#count").textContent=n<2?(sitting?"you're sitting here alone. someone might join.":"just you here right now"):n+" people here now · "+s+" sitting";
  $("#sit").textContent=sitting?"get up":"sit down";$("#sit").classList.toggle("on",sitting);
 }
-$("#sit").onclick=()=>{sitting=!sitting;renderBench();room&&room.presence({sit:sitting}).catch(()=>{})};
+if($("#sit"))$("#sit").onclick=()=>{sitting=!sitting;renderBench();room&&room.presence({sit:sitting}).catch(()=>{})};
 
 /* ---------- note form ---------- */
 $("#cols").innerHTML=NOTE_C.map((c,i)=>'<button type="button" class="sw'+(i?"":" on")+'" data-c="'+c+'" style="background:'+c+'" aria-label="paper colour '+(i+1)+'"></button>').join("");
