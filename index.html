@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Varun Sangani · a place to sit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a friendly sketchbook page, lowercase, unhurried, a bit funny
+   IDEA: a park bench drawn in ballpoint on notebook paper: a place to sit on the internet
+   PICTURE: the bench scene where everyone on the page right now sits or passes by, plus a yard of toys
+   COLOUR and TYPE: white ruled paper, ballpoint blue, highlighter yellow; chalkboard at night. Caveat + Patrick Hand
+   LAYOUT: hello + bench side by side, the yard as a big sheet of squared paper, a scribbled footer */
+:root{color-scheme:light dark;
+ --bg:light-dark(#ffffff,#1f2528);--ink:light-dark(#1a2fd0,#eef0e6);--soft:light-dark(#5866c9,#b9c0b4);
+ --rule:light-dark(#dfe8f7,#2b3337);--margin:light-dark(#ff8b8b,#7a4040);--hi:#ffe74a;--pink:#ff9ec4;--mint:#9fe8c4;--sky:#a9d4ff;
+ --note-ink:#1d2333;--panel:light-dark(#ffffff,#262d31)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:19px/1.5 "Patrick Hand","Comic Sans MS",cursive;overflow-x:clip;
+ background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--rule) 31px 32px)}
+a{color:inherit}
+h1,h2,h3{font-family:Caveat,cursive;font-weight:700;line-height:1.05;margin:0;text-wrap:balance}
+.band{padding:clamp(28px,4vw,64px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+.sk{position:relative}
+.sk::before{content:"";position:absolute;inset:0;border:2.2px solid currentColor;border-radius:255px 16px 225px 16px/16px 225px 16px 255px;pointer-events:none;filter:url(#wob)}
+nav{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline;justify-content:space-between;padding:14px max(5vw,16px) 0;max-width:1240px;margin:0 auto}
+nav .home{font:700 30px Caveat,cursive;display:inline-flex;align-items:center;min-height:44px}
+nav div{display:flex;flex-wrap:wrap;gap:4px 18px}
+nav a{text-decoration:none;font-size:19px}
+nav a:hover,.links a:hover{background:linear-gradient(transparent 55%,var(--hi) 55%);color:var(--note-ink)}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(20px,4vw,56px);align-items:center}
+.hello h1{font-size:clamp(52px,8vw,96px);margin-bottom:14px}
+.hello h1 span{background:linear-gradient(transparent 58%,var(--hi) 58% 88%,transparent 88%);color:var(--ink)}
+.hello p{margin:0 0 14px;max-width:34em}
+.links{list-style:none;padding:0;margin:20px 0 0;display:flex;flex-wrap:wrap;gap:10px 14px}
+.links a{display:inline-flex;align-items:center;min-height:44px;padding:4px 14px;text-decoration:none}
+.links small{opacity:.7;margin-left:6px}
+.scene{width:100%}
+.scene svg{width:100%;height:auto;display:block;overflow:visible}
+.scene .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:6px}
+.btn{font:inherit;color:inherit;background:none;border:0;cursor:pointer;min-height:44px;padding:4px 16px;border-radius:12px}
+.btn.on,.btn:active{background:var(--hi);color:var(--note-ink)}
+.btn:focus-visible,.links a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px dashed var(--pink);outline-offset:3px}
+.count{font-size:18px;color:var(--soft)}
+.ink{stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}.ink:not([fill]){fill:none}
+.yard-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:10px 24px;margin-bottom:14px}
+.yard-head h2{font-size:clamp(40px,5vw,52px)}
+.yard-head p{margin:0;max-width:38em}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
+.sw{width:34px;height:34px;border-radius:50%;border:2px solid var(--ink);cursor:pointer;padding:0}
+.sw.on{outline:3px solid var(--ink);outline-offset:2px}
+.swipe{display:none;margin:0 0 4px;font-size:16px;color:var(--soft)}@media(max-width:1060px){.swipe{display:block}}
+.status{font-size:16px;color:var(--soft);margin:8px 2px 0}
+.scroll{overflow-x:auto;padding:6px 4px 12px}
+.world{position:relative;width:1000px;height:620px;margin:0 auto;color:var(--ink);border-radius:6px;touch-action:pan-x pan-y;user-select:none;-webkit-user-select:none;
+ background-color:light-dark(#fbfdff,#232a2e);background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);background-size:25px 25px}
+.world canvas{position:absolute;inset:0;width:1000px;height:620px}
+#ink{pointer-events:none;z-index:3}
+.world.pen #ink{pointer-events:auto;cursor:crosshair;touch-action:none}
+#trails{pointer-events:none;z-index:6}
+.toy{position:absolute;cursor:pointer;background:none;border:0;padding:0;color:inherit;z-index:2}
+.toy svg{display:block;overflow:visible}
+.toy small{display:block;text-align:center;font-size:16px;color:var(--soft)}
+.spin svg{animation:spin 1.6s cubic-bezier(.2,.7,.3,1)}
+@keyframes spin{to{transform:rotate(1080deg)}}
+.drop{position:absolute;width:3px;height:14px;border-radius:3px;background:var(--sky);z-index:5;pointer-events:none;animation:fall 1.4s linear forwards}
+@keyframes fall{from{transform:translateY(0);opacity:1}to{transform:translateY(470px);opacity:0}}
+.note{position:absolute;width:172px;min-height:128px;padding:16px 14px 12px;color:var(--note-ink);z-index:4;touch-action:none;cursor:grab;
+ box-shadow:2px 5px 0 rgba(0,0,0,.12);font-size:19px;line-height:1.25;border-radius:2px 2px 14px 2px}
+.note::after{content:"";position:absolute;top:-9px;left:50%;width:58px;height:20px;margin-left:-29px;background:rgba(255,255,255,.55);transform:rotate(-3deg);border:1px solid rgba(0,0,0,.06)}
+.note p{margin:0 0 8px;overflow-wrap:anywhere}
+.note .by{font:700 22px Caveat,cursive;display:block;text-align:right}
+.note .x{position:absolute;top:2px;right:2px;min-height:32px;padding:0 8px;font-size:20px;color:var(--note-ink)}
+.note .tag{font-size:14px;opacity:.65;display:block}
+.note.draft{outline:2.5px dashed var(--note-ink);outline-offset:4px;z-index:7}
+.note.draft .btn{color:var(--note-ink);padding:2px 10px;min-height:38px;background:rgba(255,255,255,.6)}
+.empty{position:absolute;left:330px;top:300px;width:340px;text-align:center;font:700 30px Caveat,cursive;color:var(--soft);pointer-events:none;z-index:1}
+.modal{position:fixed;inset:0;background:rgba(10,14,30,.35);display:none;place-items:center;z-index:50;padding:16px}
+.modal.open{display:grid}
+.card{background:var(--panel);color:var(--ink);padding:26px 24px 22px;width:min(420px,100%)}
+.card h3{font-size:38px;margin-bottom:12px}
+.card label{display:block;margin:10px 0 4px}
+.card textarea,.card input{width:100%;font:inherit;font-size:19px;color:var(--note-ink);background:var(--hi);border:0;border-radius:3px;padding:10px 12px}
+.card textarea{min-height:100px;resize:vertical}
+.card .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.card .left{font-size:15px;color:var(--soft);margin-left:auto}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--hi);color:var(--note-ink);padding:10px 18px;border-radius:10px;z-index:60;display:none;max-width:90vw;text-align:center}
+footer{border-top:2px dashed var(--soft);margin-top:12px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:10px 30px;justify-content:space-between;align-items:baseline}
+footer h2{font-size:40px}
+footer p{margin:0;color:var(--soft)}
+@media(max-width:820px){.hero{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){body{font-size:18px}.note{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.spin svg,.drop{animation:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="wob"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3.2"/></filter></svg>
+
+<nav aria-label="Sections" id="home"><a class="home" href="#home" aria-label="varun sangani, back to the top">varun sangani</a><div><a href="#bench">the bench</a><a href="#yard">the yard</a><a href="#hi">say hi</a></div></nav>
+
+<main>
+<section class="band" id="bench"><div class="wrap hero">
+ <div class="hello">
+  <h1>hi, i'm <span>Varun.</span></h1>
+  <p>I'm a junior designer at Planwerkstatt, an architect by training and a usability engineer somewhat by accident. I live in Düsseldorf and spend most of my free thinking on public space: who gets to sit, who gets to protest, and why strangers on a bench almost never talk to each other.</p>
+  <p>The internet doesn't have many benches. This page is trying to be one. Take a seat, draw on the walls, play with the toys, leave a note on your way out.</p>
+  <ul class="links" id="hi">
+   <li><a class="sk" href="mailto:varuns@ik.me">email<small>varuns@ik.me</small></a></li>
+   <li><a class="sk" href="https://www.linkedin.com/in/varunsangani">linkedin</a></li>
+   <li><a class="sk" href="https://github.com/va3uns">github</a></li>
+   <li><a class="sk" href="https://varun-research.github.io">portfolio</a></li>
+   <li><a class="sk" href="https://va3uns.github.io/wetterbank">wetterbank<small>a bench that talks weather</small></a></li>
+  </ul>
+ </div>
+ <div class="scene">
+  <svg viewBox="0 0 560 400" role="img" aria-label="A hand-drawn park bench under a street lamp. Everyone on this page right now appears on or around it.">
+   <g filter="url(#wob)">
+    <g id="glow" style="display:none"><path d="M468 92 L400 330 L560 330 Z" fill="#ffe74a" opacity=".45"/></g>
+    <!-- tree -->
+    <path class="ink" d="M86 330 C90 280 84 240 92 200 M92 238 C70 226 62 214 58 200 M92 222 C108 210 118 200 124 186"/>
+    <path class="ink" d="M40 190 C20 160 40 112 76 116 C84 80 140 76 150 112 C182 112 190 158 164 176 C170 206 124 214 112 196 C96 216 52 212 40 190 Z" fill="#9fe8c4" fill-opacity=".55"/>
+    <!-- lamp post -->
+    <path class="ink" d="M468 334 L468 96 M468 96 C468 76 486 70 498 78 M452 334 L484 334"/>
+    <path class="ink" d="M486 80 L512 80 L506 98 L492 98 Z" id="lamphead" fill="none"/>
+    <!-- ground -->
+    <path class="ink" d="M8 334 C120 330 220 338 330 333 C420 329 500 336 556 332"/>
+    <path class="ink" d="M30 348 l10 -6 M130 352 l12 -5 M300 350 l8 -6 M420 352 l12 -5" opacity=".6"/>
+    <!-- bench -->
+    <path class="ink" d="M150 252 C230 249 320 254 420 250" />
+    <path class="ink" d="M146 268 C230 265 330 270 424 266 L420 250"/>
+    <path class="ink" d="M146 268 L150 252"/>
+    <path class="ink" d="M160 196 C240 193 330 198 410 194 M158 214 C240 211 330 216 412 212"/>
+    <path class="ink" d="M176 190 L174 252 M394 188 L396 252"/>
+    <path class="ink" d="M170 268 L164 334 M188 268 L190 334 M380 268 L376 334 M400 268 L404 334"/>
+    <text x="236" y="186" font-family="Caveat" font-size="20" fill="currentColor" opacity=".8">sit anywhere</text>
+   </g>
+   <g id="people"></g>
+   <rect x="455" y="72" width="70" height="40" fill="transparent" style="cursor:pointer" id="lamphit"><title>switch the lamp for everyone</title></rect>
+  </svg>
+  <div class="bar">
+   <button class="btn sk" id="sit" type="button">sit down</button>
+   <button class="btn sk" id="lamp" type="button">lamp: off</button>
+   <span class="count" id="count">just you here right now</span>
+  </div>
+ </div>
+</div></section>
+
+<section class="band" id="yard"><div class="wrap">
+ <div class="yard-head">
+  <h2>the yard</h2>
+  <p>Everything here is shared. Spin the pinwheel, make it rain, water the plant, scribble something, or stick a note on the paper.</p>
+ </div>
+ <div class="tools" role="toolbar" aria-label="Yard tools">
+  <button class="btn sk on" id="mHand" type="button">move things</button>
+  <button class="btn sk" id="mPen" type="button">draw</button>
+  <span id="inks"></span>
+  <button class="btn sk" id="undo" type="button">undo my line</button>
+  <button class="btn sk" id="write" type="button">write a note</button>
+  <button class="btn sk" id="wipe" type="button" hidden>wipe doodles</button>
+ </div>
+ <p class="swipe">swipe sideways, the yard is bigger than your screen →</p>
+ <div class="scroll">
+  <div class="world" id="world">
+   <canvas id="ink" width="1000" height="620"></canvas>
+   <canvas id="trails" width="1000" height="620"></canvas>
+   <div class="empty" id="empty">no notes yet. be the first one!</div>
+   <button class="toy" id="pin" type="button" style="left:70px;top:60px" aria-label="spin the pinwheel">
+    <svg width="130" height="190" viewBox="-65 -65 130 190"><g filter="url(#wob)"><path class="ink" d="M0 0 L0 122"/>
+     <g class="blades"><path class="ink" d="M0 0 C-10 -30 10 -52 30 -50 C18 -30 12 -14 0 0Z" fill="#ff9ec4"/><path class="ink" d="M0 0 C30 -10 52 10 50 30 C30 18 14 12 0 0Z" fill="#ffe74a"/><path class="ink" d="M0 0 C10 30 -10 52 -30 50 C-18 30 -12 14 0 0Z" fill="#a9d4ff"/><path class="ink" d="M0 0 C-30 10 -52 -10 -50 -30 C-30 -18 -14 -12 0 0Z" fill="#9fe8c4"/></g>
+     <circle cx="0" cy="0" r="5" fill="currentColor"/></g></svg>
+    <small>spin me</small>
+   </button>
+   <button class="toy" id="cloud" type="button" style="left:420px;top:26px" aria-label="make it rain for everyone">
+    <svg width="170" height="90" viewBox="0 0 170 90"><path class="ink" filter="url(#wob)" fill="#a9d4ff" fill-opacity=".5" d="M24 70 C4 70 4 44 24 42 C22 18 56 10 66 30 C76 6 120 8 122 34 C146 28 164 50 148 68 C140 74 40 74 24 70Z"/></svg>
+    <small>click for rain</small>
+   </button>
+   <button class="toy" id="plant" type="button" style="left:830px;top:300px" aria-label="water the plant">
+    <svg width="130" height="290" viewBox="0 0 130 290"><g filter="url(#wob)" id="plantg"></g></svg>
+    <small id="plantlbl">water me</small>
+   </button>
+  </div>
+ </div>
+ <p class="status" id="status">getting the yard ready…</p>
+</div></section>
+</main>
+
+<footer class="band"><div class="wrap">
+ <h2>thanks for sitting a while.</h2>
+</div></footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+ <form class="card sk" id="form">
+  <h3 id="mt">leave a note</h3>
+  <label for="msg">your message</label>
+  <textarea id="msg" maxlength="140" required placeholder="say something nice, or weird"></textarea>
+  <label for="nick">your name</label>
+  <input id="nick" maxlength="24" required placeholder="who's this from?">
+  <div class="row" id="cols"></div>
+  <div class="row"><button class="btn sk on" type="submit">write it</button><button class="btn sk" type="button" id="cancel">never mind</button><span class="left" id="left">140 left</span></div>
+ </form>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+{
+const $=s=>document.querySelector(s), W=1000, H=620, NS="http://www.w3.org/2000/svg";
+const LS={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const PAL=["#1a2fd0","#e8366b","#1f9d68","#f08a00","#7b3fe4","#0aa3c2"], NOTE_C=["#ffe74a","#ff9ec4","#a9d4ff","#9fe8c4"], INKS=["currentColor","#e8366b","#1f9d68","#f08a00"];
+const myColor=LS.get("y.color",PAL[Math.floor(Math.random()*PAL.length)]); LS.set("y.color",myColor);
+let nick=LS.get("y.nick","");
+let db=null, room=null, user=null, owner=false, canWrite=true, shared=false;
+let notes=[], strokes=[], toys={lamp:false,plant:2};
+let localNotes=LS.get("y.notes",[]), localStrokes=LS.get("y.strokes",[]), mine=LS.get("y.mine",[]);
+let sitting=false, mode="hand", inkC=INKS[0], noteC=NOTE_C[0], dragging=false, pendingNotes=false;
+const world=$("#world"), inkCv=$("#ink"), ink=inkCv.getContext("2d"), trCv=$("#trails"), tr=trCv.getContext("2d");
+const dpr=Math.min(2,window.devicePixelRatio||1);
+for(const c of [inkCv,trCv]){c.width=W*dpr;c.height=H*dpr;c.getContext("2d").scale(dpr,dpr)}
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const toast=(t)=>{const e=$("#toast");e.textContent=t;e.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display="none",3200)};
+const pt=e=>{const r=world.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}};
+const inkColor=c=>c==="currentColor"?getComputedStyle(world).color:c;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+function use(name){
+ if(!window.claude||typeof window.claude.use!=="function")return Promise.resolve(null);
+ return Promise.race([window.claude.use(name).catch(()=>null),new Promise(r=>setTimeout(()=>r(null),10000))]);
+}
+function setStatus(){
+ $("#status").textContent=shared
+  ?(canWrite?"notes, doodles and toys are shared with everyone who opens this page.":"you can look around, but only people Varun invited can leave things here. anything you add stays in this browser.")
+  :"notes and doodles are saved in this browser for now.";
+}
+function refused(e){
+ if(e&&(e.code==="invalid_argument"||e.code==="not_granted")){canWrite=false;setStatus();return true}
+ if(e&&e.code==="quota_exceeded"){toast("the yard is full! Varun needs to tidy up.");return true}
+ return false;
+}
+
+/* ---------- notes ---------- */
+function renderNotes(){
+ if(dragging){pendingNotes=true;return}
+ world.querySelectorAll(".note:not(.draft)").forEach(n=>n.remove());
+ const all=notes.concat(localNotes.map(n=>Object.assign({},n,{local:true})));
+ $("#empty").style.display=all.length||world.querySelector(".draft")?"none":"block";
+ for(const n of all){
+  const el=document.createElement("div");el.className="note";
+  el.style.left=clamp(+n.x||0,0,W-172)+"px";el.style.top=clamp(+n.y||0,0,H-130)+"px";
+  el.style.transform="rotate("+clamp(+n.r||0,-8,8)+"deg)";
+  el.style.background=NOTE_C.includes(n.c)?n.c:NOTE_C[0];
+  const p=document.createElement("p");p.textContent=String(n.text||"").slice(0,140);
+  const by=document.createElement("span");by.className="by";by.textContent="— "+String(n.name||"someone").slice(0,24);
+  el.append(p,by);
+  if(n.local){const t=document.createElement("span");t.className="tag";t.textContent="only you can see this one";el.append(t)}
+  if(owner&&!n.local||n.local){const x=document.createElement("button");x.className="btn x";x.type="button";x.textContent="×";x.setAttribute("aria-label","remove note");
+   x.onclick=ev=>{ev.stopPropagation();removeNote(n)};el.append(x)}
+  if(n.local||canWrite&&shared)dragNote(el,(nx,ny)=>moveNote(n,nx,ny));
+  world.append(el);
+ }
+}
+function dragNote(el,done){
+ el.addEventListener("pointerdown",e=>{
+  if(mode!=="hand"||e.target.closest("button"))return;
+  e.preventDefault();el.setPointerCapture(e.pointerId);dragging=true;
+  const p=pt(e),ox=p.x-parseFloat(el.style.left),oy=p.y-parseFloat(el.style.top);el.style.zIndex=8;
+  const mv=ev=>{const q=pt(ev);el.style.left=clamp(q.x-ox,0,W-172)+"px";el.style.top=clamp(q.y-oy,0,H-130)+"px";sendCursor(q)};
+  const up=()=>{el.removeEventListener("pointermove",mv);el.removeEventListener("pointerup",up);el.removeEventListener("pointercancel",up);
+   dragging=false;el.style.zIndex="";if(done)done(Math.round(parseFloat(el.style.left)),Math.round(parseFloat(el.style.top)));
+   if(pendingNotes){pendingNotes=false;renderNotes()}};
+  el.addEventListener("pointermove",mv);el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up);
+ });
+}
+function moveNote(n,x,y){
+ if(n.local){const l=localNotes.find(m=>m.id===n.id);if(l){l.x=x;l.y=y;LS.set("y.notes",localNotes)}return}
+ n.x=x;n.y=y;db.collection("notes").doc(n.id).update({x,y}).catch(e=>{refused(e);renderNotes()});
+}
+function removeNote(n){
+ if(n.local){localNotes=localNotes.filter(m=>m.id!==n.id);LS.set("y.notes",localNotes);renderNotes();return}
+ db.collection("notes").doc(n.id).delete().catch(e=>refused(e));
+}
+function saveNote(n){
+ if(shared&&canWrite){
+  db.collection("notes").doc(n.id).set(n).catch(e=>{ if(refused(e)&&e.code!=="quota_exceeded"){localNotes.push(n);LS.set("y.notes",localNotes);renderNotes();toast("saved in your browser: only invited friends can stick notes for everyone")} });
+ }else{localNotes.push(n);LS.set("y.notes",localNotes);renderNotes()}
+}
+function draftNote(text,name,c){
+ const wrap=world.parentElement, x=clamp(wrap.scrollLeft+wrap.clientWidth/2-86,20,W-200), y=200+Math.random()*120;
+ const el=document.createElement("div");el.className="note draft";el.style.left=x+"px";el.style.top=y+"px";el.style.background=c;
+ const r=Math.round(Math.random()*10-5);el.style.transform="rotate("+r+"deg)";
+ const p=document.createElement("p");p.textContent=text;const by=document.createElement("span");by.className="by";by.textContent="— "+name;
+ const hint=document.createElement("span");hint.className="tag";hint.textContent="drag me somewhere, then";
+ const b=document.createElement("button");b.className="btn";b.type="button";b.textContent="stick it";
+ b.onclick=()=>{const n={id:uid(),text,name,c,r,x:Math.round(parseFloat(el.style.left)),y:Math.round(parseFloat(el.style.top)),ts:Date.now()};el.remove();saveNote(n);toast("stuck! thanks, "+name+".")};
+ el.append(p,by,hint,b);setMode("hand");dragNote(el,null);world.append(el);$("#empty").style.display="none";
+ el.scrollIntoView({block:"nearest",inline:"nearest",behavior:"smooth"});
+}
+
+/* ---------- drawing ---------- */
+function drawStroke(s){
+ const p=s.pts;if(!Array.isArray(p)||p.length<4)return;
+ ink.strokeStyle=inkColor(INKS.includes(s.c)?s.c:INKS[0]);ink.lineWidth=clamp(+s.w||3,1,8);ink.lineCap=ink.lineJoin="round";
+ ink.beginPath();ink.moveTo(p[0],p[1]);
+ for(let i=2;i<p.length-2;i+=2){const mx=(p[i]+p[i+2])/2,my=(p[i+1]+p[i+3])/2;ink.quadraticCurveTo(p[i],p[i+1],mx,my)}
+ ink.lineTo(p[p.length-2],p[p.length-1]);ink.stroke();
+}
+function renderInk(){ink.clearRect(0,0,W,H);strokes.concat(localStrokes).forEach(drawStroke);if(cur)drawStroke(cur)}
+let cur=null;
+inkCv.addEventListener("pointerdown",e=>{if(mode!=="pen")return;e.preventDefault();inkCv.setPointerCapture(e.pointerId);const p=pt(e);cur={pts:[Math.round(p.x),Math.round(p.y)],c:inkC,w:3}});
+inkCv.addEventListener("pointermove",e=>{const p=pt(e);sendCursor(p);if(!cur)return;const a=cur.pts,lx=a[a.length-2],ly=a[a.length-1];
+ if(Math.hypot(p.x-lx,p.y-ly)<2.5||a.length>1200)return;a.push(Math.round(p.x),Math.round(p.y));renderInk()});
+const endStroke=()=>{if(!cur)return;const s=cur;cur=null;if(s.pts.length<4){s.pts.push(s.pts[0]+1,s.pts[1]+1)}
+ s.id=uid();s.ts=Date.now();
+ if(shared&&canWrite){strokes.push(s);renderInk();mine.push(s.id);LS.set("y.mine",mine.slice(-50));
+  db.collection("doodles").doc(s.id).set(s).catch(e=>{strokes=strokes.filter(x=>x!==s);if(refused(e)){localStrokes.push(s);LS.set("y.strokes",localStrokes)}renderInk()});
+ }else{localStrokes.push(s);LS.set("y.strokes",localStrokes);renderInk()}};
+inkCv.addEventListener("pointerup",endStroke);inkCv.addEventListener("pointercancel",endStroke);
+$("#undo").onclick=()=>{
+ if(localStrokes.length&&!(shared&&canWrite&&mine.length)){localStrokes.pop();LS.set("y.strokes",localStrokes);renderInk();return}
+ const id=mine.pop();LS.set("y.mine",mine);if(!id){toast("nothing of yours to undo");return}
+ strokes=strokes.filter(s=>s.id!==id);renderInk();db.collection("doodles").doc(id).delete().catch(refused);
+};
+$("#wipe").onclick=async()=>{
+ if(!$("#wipe").dataset.sure){$("#wipe").dataset.sure=1;$("#wipe").textContent="sure? tap again";setTimeout(()=>{delete $("#wipe").dataset.sure;$("#wipe").textContent="wipe doodles"},3000);return}
+ const ids=strokes.map(s=>s.id);strokes=[];renderInk();for(const id of ids){try{await db.collection("doodles").doc(id).delete()}catch(e){}}
+};
+function setMode(m){mode=m;world.classList.toggle("pen",m==="pen");$("#mHand").classList.toggle("on",m==="hand");$("#mPen").classList.toggle("on",m==="pen")}
+$("#mHand").onclick=()=>setMode("hand");$("#mPen").onclick=()=>setMode("pen");
+$("#inks").innerHTML=INKS.map((c,i)=>'<button type="button" class="sw'+(i?"":" on")+'" data-i="'+i+'" style="background:'+(i?c:"var(--ink)")+'" aria-label="ink '+(i+1)+'"></button>').join(" ");
+$("#inks").onclick=e=>{const b=e.target.closest(".sw");if(!b)return;inkC=INKS[+b.dataset.i];$("#inks").querySelectorAll(".sw").forEach(s=>s.classList.toggle("on",s===b));setMode("pen")};
+
+/* ---------- toys ---------- */
+function renderToys(){
+ $("#glow").style.display=toys.lamp?"":"none";$("#lamphead").setAttribute("fill",toys.lamp?"#ffe74a":"none");
+ $("#lamp").textContent="lamp: "+(toys.lamp?"on":"off");$("#lamp").classList.toggle("on",!!toys.lamp);
+ const h=clamp(Math.round(+toys.plant||1),1,10), top=236-h*20;let g='<path class="ink" d="M30 240 L100 240 L92 286 L38 286 Z" fill="#f4b183" fill-opacity=".6"/><path class="ink" d="M65 240 C60 '+(240-h*10)+' 70 '+(240-h*14)+' 65 '+top+'"/>';
+ for(let i=1;i<h;i++){const y=240-i*20,s=i%2?1:-1;g+='<path class="ink" fill="#9fe8c4" d="M65 '+y+' C'+(65+s*16)+' '+(y-16)+' '+(65+s*34)+' '+(y-8)+' '+(65+s*38)+' '+(y-2)+' C'+(65+s*24)+' '+(y+4)+' '+(65+s*10)+' '+(y+2)+' 65 '+y+'Z"/>'}
+ if(h>=8)g+='<g transform="translate(65 '+top+')"><circle r="9" fill="#ffe74a" class="ink"/>'+[0,72,144,216,288].map(a=>'<ellipse rx="8" ry="15" cy="-20" transform="rotate('+a+')" fill="#ff9ec4" class="ink"/>').join("")+'<circle r="8" fill="#ffe74a"/></g>';
+ $("#plantg").innerHTML=g;$("#plantlbl").textContent=h>=10?"fully grown! click to prune":h>=8?"it flowered!":"water me ("+h+"/10)";
+}
+let toyBusy=false,toyNext=null;
+async function saveToys(){
+ if(!(shared&&canWrite)){LS.set("y.toys",toys);return}
+ if(toyBusy){toyNext=true;return}toyBusy=true;
+ try{await db.doc("toys/state").set({lamp:!!toys.lamp,plant:toys.plant})}catch(e){refused(e)}
+ toyBusy=false;if(toyNext){toyNext=false;saveToys()}
+}
+const flipLamp=()=>{toys.lamp=!toys.lamp;renderToys();saveToys()};
+$("#lamp").onclick=flipLamp;$("#lamphit").addEventListener("click",flipLamp);
+$("#plant").onclick=()=>{toys.plant=toys.plant>=10?1:toys.plant+1;renderToys();saveToys()};
+function spin(){const p=$("#pin");p.classList.remove("spin");void p.offsetWidth;p.classList.add("spin")}
+function rain(){
+ if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+ for(let i=0;i<34;i++){const d=document.createElement("span");d.className="drop";d.style.left=(440+Math.random()*130)+"px";d.style.top=(100+Math.random()*16)+"px";d.style.animationDelay=(Math.random()*1.2)+"s";world.append(d);setTimeout(()=>d.remove(),2800)}
+}
+$("#pin").onclick=()=>{spin();room&&room.presence({spin:Date.now()}).catch(()=>{})};
+$("#cloud").onclick=()=>{rain();room&&room.presence({rain:Date.now()}).catch(()=>{})};
+
+/* ---------- presence: bench + cursor trails ---------- */
+const trails=new Map(), seen={};
+let lastSend=0;
+function sendCursor(p){
+ addTrail("me",p.x,p.y,myColor,"you");
+ if(!room)return;const now=performance.now();if(now-lastSend<33)return;lastSend=now;
+ room.presence({x:Math.round(p.x),y:Math.round(p.y)}).catch(()=>{});
+}
+world.addEventListener("pointermove",e=>{if(e.target!==inkCv)sendCursor(pt(e))});
+world.addEventListener("pointerleave",()=>{room&&room.presence({x:null,y:null}).catch(()=>{})});
+function addTrail(k,x,y,c,label){let t=trails.get(k);if(!t){t={pts:[],c,label};trails.set(k,t)}t.c=c;t.label=label;t.pts.push({x,y,t:performance.now()});if(t.pts.length>40)t.pts.shift();loop()}
+let looping=false;
+function loop(){if(looping)return;looping=true;requestAnimationFrame(frame)}
+function frame(){
+ tr.clearRect(0,0,W,H);const now=performance.now();let alive=false;
+ for(const[k,t]of trails){t.pts=t.pts.filter(p=>now-p.t<1400);if(!t.pts.length){continue}alive=true;
+  tr.lineCap="round";for(let i=1;i<t.pts.length;i++){const a=t.pts[i-1],b=t.pts[i],f=1-(now-b.t)/1400;tr.strokeStyle=t.c;tr.globalAlpha=f*.8;tr.lineWidth=2+f*5;tr.beginPath();tr.moveTo(a.x,a.y);tr.lineTo(b.x,b.y);tr.stroke()}
+  const l=t.pts[t.pts.length-1];tr.globalAlpha=1;
+  if(k!=="me"){tr.fillStyle=t.c;tr.beginPath();tr.arc(l.x,l.y,6,0,7);tr.fill();tr.font="18px 'Patrick Hand'";tr.fillText(t.label,l.x+10,l.y-8)}}
+ tr.globalAlpha=1;
+ if(alive)requestAnimationFrame(frame);else looping=false;
+}
+function figure(x,y,c,label,sit){
+ const g=document.createElementNS(NS,"g");g.setAttribute("transform","translate("+x+" "+y+")");g.setAttribute("filter","url(#wob)");
+ const d=sit?"M0 -40 C-2 -26 -2 -14 0 0 L22 2 L22 34 M0 -32 L-14 -14 M0 -32 L16 -18":"M0 -40 L0 0 L-10 34 M0 0 L10 34 M0 -32 L-14 -12 M0 -32 L14 -12";
+ const body=document.createElementNS(NS,"path");body.setAttribute("d",d);body.setAttribute("class","ink");body.setAttribute("stroke",c);body.style.stroke=c;body.style.strokeWidth=3.4;
+ const head=document.createElementNS(NS,"circle");head.setAttribute("cy","-52");head.setAttribute("r","12");head.setAttribute("fill",c);head.setAttribute("fill-opacity",".85");
+ g.append(body,head);
+ if(label){const t=document.createElementNS(NS,"text");t.setAttribute("y","-72");t.setAttribute("text-anchor","middle");t.setAttribute("font-family","Caveat");t.setAttribute("font-size","22");t.setAttribute("fill","currentColor");t.textContent=label;g.append(t)}
+ return g;
+}
+function renderBench(){
+ const ppl=room?room.peers().filter(p=>p.kind!=="agent"):[];
+ const list=ppl.length?ppl.map(p=>({me:p.sameTab,c:p.sameTab?myColor:(PAL.includes(p.presence.c)?p.presence.c:"#888"),sit:p.sameTab?sitting:!!p.presence.sit,nick:p.sameTab?"you":String(p.presence.nick||"").slice(0,14)})):[{me:true,c:myColor,sit:sitting,nick:"you"}];
+ const sitters=list.filter(p=>p.sit).slice(0,5), walkers=list.filter(p=>!p.sit);
+ const g=$("#people");g.replaceChildren();
+ sitters.forEach((p,i)=>g.append(figure(196+i*48,250,p.c,p.me?"you":p.nick,true)));
+ const WX=[522,36,550,122,498,10];walkers.slice(0,6).forEach((p,i)=>g.append(figure(WX[i],300,p.c,p.me?"you":"",false)));
+ if(walkers.length>6){const t=document.createElementNS(NS,"text");t.setAttribute("x","20");t.setAttribute("y","392");t.setAttribute("font-family","Caveat");t.setAttribute("font-size","22");t.setAttribute("fill","currentColor");t.textContent="+"+(walkers.length-6)+" more passing by";g.append(t)}
+ const n=list.length,s=list.filter(p=>p.sit).length;
+ $("#count").textContent=n<2?(sitting?"you're sitting here alone. someone might join.":"just you here right now"):n+" people here now · "+s+" sitting";
+ $("#sit").textContent=sitting?"get up":"sit down";$("#sit").classList.toggle("on",sitting);
+}
+$("#sit").onclick=()=>{sitting=!sitting;renderBench();room&&room.presence({sit:sitting}).catch(()=>{})};
+
+/* ---------- note form ---------- */
+$("#cols").innerHTML=NOTE_C.map((c,i)=>'<button type="button" class="sw'+(i?"":" on")+'" data-c="'+c+'" style="background:'+c+'" aria-label="paper colour '+(i+1)+'"></button>').join("");
+$("#cols").onclick=e=>{const b=e.target.closest(".sw");if(!b)return;noteC=b.dataset.c;$("#cols").querySelectorAll(".sw").forEach(s=>s.classList.toggle("on",s===b))};
+const modal=$("#modal");
+$("#write").onclick=()=>{$("#nick").value=nick;modal.classList.add("open");$("#msg").focus()};
+$("#cancel").onclick=()=>modal.classList.remove("open");
+modal.addEventListener("click",e=>{if(e.target===modal)modal.classList.remove("open")});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")modal.classList.remove("open")});
+$("#msg").addEventListener("input",()=>$("#left").textContent=(140-$("#msg").value.length)+" left");
+$("#form").addEventListener("submit",e=>{e.preventDefault();const t=$("#msg").value.trim(),n=$("#nick").value.trim();if(!t||!n)return;
+ nick=n;LS.set("y.nick",n);room&&room.presence({nick:n}).catch(()=>{});modal.classList.remove("open");$("#msg").value="";$("#left").textContent="140 left";draftNote(t,n,noteC)});
+
+/* ---------- start ---------- */
+toys=Object.assign(toys,LS.get("y.toys",{}));
+renderToys();renderNotes();renderInk();renderBench();setStatus();
+Promise.all([use("db"),use("room"),use("user")]).then(async([d,r,u])=>{
+ user=u;
+ if(u){try{owner=!!(await u.isOwner())}catch(e){}
+  try{const w=await u.can("data.write");if(w===false)canWrite=false}catch(e){}}
+ $("#wipe").hidden=!owner;
+ if(d){
+  db=d;shared=true;toys={lamp:false,plant:2};
+  localNotes=LS.get("y.notes",[]);
+  const timer=setTimeout(()=>{$("#status").textContent="the shared yard is taking a while to load… what you see may be out of date."},10000);
+  const done=s=>{if(!s.metadata.fromCache){clearTimeout(timer);setStatus()}};
+  db.collection("notes").orderBy("ts").limit(300).onSnapshot(s=>{notes=s.docs.map(x=>Object.assign({},x.data(),{id:x.id}));renderNotes();done(s)},e=>{clearTimeout(timer);setStatus()});
+  db.collection("doodles").orderBy("ts").limit(500).onSnapshot(s=>{strokes=s.docs.map(x=>Object.assign({},x.data(),{id:x.id}));renderInk()},()=>{});
+  db.doc("toys/state").onSnapshot(s=>{if(s.exists){const v=s.data();toys={lamp:!!v.lamp,plant:clamp(+v.plant||1,1,10)}}renderToys()},()=>{});
+ }
+ setStatus();renderNotes();
+ if(r){
+  room=r;
+  room.presence({c:myColor,nick:nick||null,sit:sitting,who:{c:myColor,t:Date.now()}}).catch(()=>{});
+  room.onPeers(ch=>{
+   for(const p of ch.peers){if(p.sameTab||p.kind==="agent")continue;const pr=p.presence||{};
+    for(const k of ["rain","spin"]){const v=+pr[k]||0,key=p.peer+k;if(seen[key]===undefined){seen[key]=v;continue}if(v>seen[key]){seen[key]=v;k==="rain"?rain():spin()}}
+    if(typeof pr.x==="number"&&typeof pr.y==="number")addTrail(p.peer,clamp(pr.x,0,W),clamp(pr.y,0,H),PAL.includes(pr.c)?pr.c:"#888",String(pr.nick||"someone").slice(0,14));
+   }
+   for(const p of ch.left)trails.delete(p.peer);
+   renderBench();
+  },()=>{room=null;renderBench()});
+ }
+});
+}
+</script>
+</body>
+</html>
