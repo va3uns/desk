@@ -1,7 +1,7 @@
-# bench
+# desk
 
-a place to sit on the internet. a hand-drawn personal page by Varun Sangani with a bench, a yard of toys, doodles and sticky notes.
+my desk on the internet. a personal site by varun sangani: a studio display with my intro on it, a lamp that switches light and dark, sticky notes you can leave anywhere around the screen, and a few things to fidget with.
 
-live at https://va3uns.github.io/bench/
+work in progress. lo-fi wireframes first, real objects and photos next.
 
-inspired by [playhtml](https://playhtml.fun), [spencer.place](https://spencer.place), [we were online](https://wewere.online) and Spencer Chang's essay [a place to sit](https://sfpc.study/blog/a-place-to-sit).
+inspired by [spencer.place](https://spencer.place), [playhtml](https://playhtml.fun), [nateparrott.com](https://nateparrott.com), [we were online](https://wewere.online) and early arc.
